@@ -1,28 +1,38 @@
 FROM php:8.2-apache
 
-# පද්ධතියට අවශ්‍ය ලයිබ්‍රරි ඉන්ස්ටෝල් කිරීම
+# 1. පද්ධතියට අවශ්‍ය ලයිබ්‍රරි ඉන්ස්ටෝල් කිරීම
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    git \
+    curl
 
-# PHP extensions ඉන්ස්ටෝල් කිරීම
+# 2. PHP extensions ඉන්ස්ටෝල් කිරීම
 RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
-# Apache rewrite module එක enable කිරීම
+# 3. Apache rewrite module එක enable කිරීම
 RUN a2enmod rewrite
 
-# Files කොපි කිරීම
-COPY . /var/www/html/
+# 4. Apache Document Root එක Laravel public ෆෝල්ඩරයට වෙනස් කිරීම (වැදගත්ම කොටස!)
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# Permissions හැදීම
+# 5. Composer ඉන්ස්ටෝල් කිරීම
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 6. ප්‍රොජෙක්ට් එක සර්වර් එකට කොපි කිරීම
+WORKDIR /var/www/html
+COPY . .
+
+# 7. Dependencies ඉන්ස්ටෝල් කිරීම (vendor folder එක හැදීමට)
+RUN composer install --no-interaction --optimize-autoloader --no-dev
+
+# 8. Permissions නිවැරදි කිරීම
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Port එක සෙට් කිරීම
-ENV PORT=80
 EXPOSE 80
-
-# Apache start කිරීම
 CMD ["apache2-foreground"]
