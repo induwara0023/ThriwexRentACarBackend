@@ -8,4 +8,6 @@ services:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
-        value: false
+        value: true
+      - key: APP_KEY
+        value: base64:tw4rVnC4STf5ujLN5TZ6aq7OygoyHfB+6QfXKBM/5jY=
