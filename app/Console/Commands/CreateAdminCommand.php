@@ -40,7 +40,7 @@ class CreateAdminCommand extends Command
         User::create([
             'name' => 'System Admin',
             'email' => $email,
-            'password' => Hash::make($password),
+            'password' => $password,
         ]);
 
         $this->info("Admin created successfully!");

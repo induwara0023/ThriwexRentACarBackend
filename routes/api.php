@@ -18,10 +18,10 @@ Route::get('create-admin-user', function() {
         \App\Models\User::create([
             'name' => 'System Admin',
             'email' => 'admin@thriwex.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('admin123')
+            'password' => 'admin123'
         ]);
     } else {
-        $admin1->update(['password' => \Illuminate\Support\Facades\Hash::make('admin123')]);
+        $admin1->update(['password' => 'admin123']);
     }
 
     // Create second test admin
@@ -30,13 +30,13 @@ Route::get('create-admin-user', function() {
         \App\Models\User::create([
             'name' => 'Test Admin',
             'email' => 'test@thriwex.com',
-            'password' => \Illuminate\Support\Facades\Hash::make('test1234')
+            'password' => 'test1234'
         ]);
     } else {
-        $admin2->update(['password' => \Illuminate\Support\Facades\Hash::make('test1234')]);
+        $admin2->update(['password' => 'test1234']);
     }
 
-    return "Users Prepared! 1: admin@thriwex.com (admin123), 2: test@thriwex.com (test1234)";
+    return "Users Prepared (No double-hash)! 1: admin@thriwex.com (admin123), 2: test@thriwex.com (test1234)";
 });
 
 Route::middleware('auth:sanctum')->group(function () {
