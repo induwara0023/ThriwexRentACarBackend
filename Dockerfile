@@ -39,6 +39,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 CMD ["apache2-foreground"]
-
-RUN php artisan config:cache
-RUN php artisan route:cache
+
