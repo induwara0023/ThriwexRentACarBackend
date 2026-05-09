@@ -12,16 +12,31 @@ use App\Http\Controllers\AuthController;
 Route::post('login', [AuthController::class, 'login']);
 
 Route::get('create-admin-user', function() {
-    $admin = \App\Models\User::where('email', 'admin@thriwex.com')->first();
-    if (!$admin) {
+    // Create first admin
+    $admin1 = \App\Models\User::where('email', 'admin@thriwex.com')->first();
+    if (!$admin1) {
         \App\Models\User::create([
             'name' => 'System Admin',
             'email' => 'admin@thriwex.com',
             'password' => \Illuminate\Support\Facades\Hash::make('admin123')
         ]);
-        return "Admin user created! Email: admin@thriwex.com, Password: admin123";
+    } else {
+        $admin1->update(['password' => \Illuminate\Support\Facades\Hash::make('admin123')]);
     }
-    return "Admin already exists.";
+
+    // Create second test admin
+    $admin2 = \App\Models\User::where('email', 'test@thriwex.com')->first();
+    if (!$admin2) {
+        \App\Models\User::create([
+            'name' => 'Test Admin',
+            'email' => 'test@thriwex.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('test1234')
+        ]);
+    } else {
+        $admin2->update(['password' => \Illuminate\Support\Facades\Hash::make('test1234')]);
+    }
+
+    return "Users Prepared! 1: admin@thriwex.com (admin123), 2: test@thriwex.com (test1234)";
 });
 
 Route::middleware('auth:sanctum')->group(function () {
