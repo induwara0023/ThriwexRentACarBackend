@@ -8,14 +8,19 @@ $kernel->bootstrap();
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-$user = User::where('email', 'admin@thriwex.com')->first();
+$email = 'admin@thriwex.com';
+$password = 'admin123';
+
+$user = User::where('email', $email)->first();
 if (!$user) {
     User::create([
         'name' => 'System Admin',
-        'email' => 'admin@thriwex.com',
-        'password' => Hash::make('password')
+        'email' => $email,
+        'password' => Hash::make($password)
     ]);
     echo "Admin user created successfully.\n";
+    echo "Email: $email\n";
+    echo "Password: $password\n";
 } else {
-    echo "Admin user already exists.\n";
+    echo "Admin user already exists with email: $email\n";
 }

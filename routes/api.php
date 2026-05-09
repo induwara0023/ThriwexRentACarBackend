@@ -11,6 +11,19 @@ use App\Http\Controllers\AuthController;
 // Auth Routes
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('create-admin-user', function() {
+    $admin = \App\Models\User::where('email', 'admin@thriwex.com')->first();
+    if (!$admin) {
+        \App\Models\User::create([
+            'name' => 'System Admin',
+            'email' => 'admin@thriwex.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('admin123')
+        ]);
+        return "Admin user created! Email: admin@thriwex.com, Password: admin123";
+    }
+    return "Admin already exists.";
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user', [AuthController::class, 'me']);
