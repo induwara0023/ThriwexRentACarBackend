@@ -39,7 +39,7 @@ Route::get('create-admin-user', function() {
     return "Users Prepared (No double-hash)! 1: admin@thriwex.com (admin123), 2: test@thriwex.com (test1234)";
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::group([], function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user', [AuthController::class, 'me']);
 
