@@ -23,7 +23,8 @@ class VehicleResource extends JsonResource
             'daily_rate' => $this->daily_rate,
             'km_limit_per_day' => $this->km_limit_per_day ?? 0,
             'extra_km_rate' => $this->extra_km_rate ?? 0,
-            'image_url' => $this->image_path ? asset('storage/' . $this->image_path) : null,
+            'service_type' => $this->service_type ?? 'rent',
+            'image_url' => $this->image_path ? url('api/media/' . $this->image_path) : null,
         ];
     }
 }

@@ -53,4 +53,40 @@ class CustomerController extends Controller
     {
         return CustomerResource::collection(Customer::latest()->get());
     }
+
+    public function update(Request $request, Customer $customer)
+    {
+        $validated = $request->validate([
+            'nic_no' => 'required|unique:customers,nic_no,' . $customer->id,
+            'name' => 'required|string',
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'status' => 'required|in:active,blacklisted',
+            'nic_front' => 'nullable|image|max:2048',
+            'nic_back' => 'nullable|image|max:2048',
+            'license_front' => 'nullable|image|max:2048',
+            'license_back' => 'nullable|image|max:2048',
+        ]);
+
+        $fields = ['nic_front', 'nic_back', 'license_front', 'license_back'];
+        foreach ($fields as $field) {
+            if ($request->hasFile($field)) {
+                $validated[$field] = $request->file($field)->store('customers/documents', 'public');
+            }
+        }
+
+        $customer->update($validated);
+        return new CustomerResource($customer);
+    }
+
+    public function destroy(Customer $customer)
+    {
+        try {
+            $customer->bookings()->delete();
+            $customer->delete();
+            return response()->json(['message' => 'Customer deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete customer', 'error' => $e->getMessage()], 500);
+        }
+    }
 }

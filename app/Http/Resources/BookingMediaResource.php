@@ -12,7 +12,7 @@ class BookingMediaResource extends JsonResource
         return [
             'id' => $this->id,
             'type' => $this->type,
-            'file_url' => asset('storage/' . $this->file_path),
+            'file_url' => url('api/media/' . $this->file_path),
         ];
     }
 }

@@ -13,6 +13,7 @@ class Vehicle extends Model
     protected $fillable = [
         'plate_no',
         'model',
+        'service_type',
         'type',
         'transmission',
         'current_km',
@@ -24,6 +25,16 @@ class Vehicle extends Model
         'km_limit_per_day',
         'extra_km_rate',
         'image_path',
+    ];
+
+    protected $casts = [
+        'daily_rate' => 'decimal:2',
+        'extra_km_rate' => 'decimal:2',
+        'current_km' => 'integer',
+        'next_service_km' => 'integer',
+        'km_limit_per_day' => 'integer',
+        'insurance_expiry' => 'date',
+        'license_expiry' => 'date',
     ];
 
     /**

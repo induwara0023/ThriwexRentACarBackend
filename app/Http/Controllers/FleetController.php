@@ -39,7 +39,8 @@ class FleetController extends Controller
         $validated = $request->validate([
             'plate_no' => 'required|unique:vehicles',
             'model' => 'required|string',
-            'type' => 'required|in:Car,Van,SUV',
+            'type' => 'required|in:Car,Van,SUV,Bike',
+            'service_type' => 'required|in:rent,hire',
             'transmission' => 'required|in:Auto,Manual',
             'current_km' => 'required|integer',
             'next_service_km' => 'required|integer',
@@ -65,7 +66,8 @@ class FleetController extends Controller
         $validated = $request->validate([
             'plate_no' => 'required|unique:vehicles,plate_no,' . $vehicle->id,
             'model' => 'required|string',
-            'type' => 'required|in:Car,Van,SUV',
+            'type' => 'required|in:Car,Van,SUV,Bike',
+            'service_type' => 'required|in:rent,hire',
             'transmission' => 'required|in:Auto,Manual',
             'current_km' => 'required|integer',
             'next_service_km' => 'required|integer',
@@ -115,5 +117,16 @@ class FleetController extends Controller
             ->get();
 
         return VehicleResource::collection($availableVehicles);
+    }
+
+    public function destroy(Vehicle $vehicle)
+    {
+        try {
+            $vehicle->bookings()->delete();
+            $vehicle->delete();
+            return response()->json(['message' => 'Vehicle deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete vehicle', 'error' => $e->getMessage()], 500);
+        }
     }
 }
